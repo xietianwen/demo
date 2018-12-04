@@ -1,0 +1,11 @@
+<h2>mouvementES</h2>
+<ul class="mouvementes">
+  <li *ngFor="let mouvement of mouvementes$ | async"
+    [class.selected]="mouvement.id === selectedId">
+    <a [routerLink]="['/mouvement', mouvement.id]">
+      <span class="badge">{{ mouvement.id }}</span>{{ mouvement.name }}
+    </a>
+  </li>
+</ul>
+
+<button routerLink="/sidekicks">Go to sidekicks</button>

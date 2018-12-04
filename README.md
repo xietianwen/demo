@@ -36,14 +36,18 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     const appRoutes: Routes = [
     { path: 'crisis-center', component: CrisisListComponent },
     { path: 'heroes',        component: HeroListComponent },
+    { path: 'heroes',        component: HeroListComponent },
     { path: '',   redirectTo: '/heroes', pathMatch: 'full' },
     { path: '**', component: PageNotFoundComponent }
     ];
-    
     imports: [RouterModule.forRoot(appRoutes, { enableTracing: true })],
 
-6)
-
+6)ng generate module mouvements/mouvements --module app --flat --routing
+7)ng generate class mouvements/Mouvement
+8)ng generate service mouvements/mouvement
+9)add mouvements/mock-mouvements.ts
+10)ng generate service common/services/message
+11)ng generate component mouvements/mouvement-detail
 
 
 
