@@ -1,3 +1,13 @@
-<p>
-  mouvement-detail works!
-</p>
+<h2>MOUVEMENTS</h2>
+<div *ngIf="mouvement$ | async as mov">
+  <h3>"{{ mov.name }}"</h3>
+  <div>
+    <label>Id: </label>{{ mov.id }}</div>
+  <div>
+    <label>Name: </label>
+    <input [(ngModel)]="mov.name" placeholder="mov"/>
+  </div>
+  <p>
+    <button (click)="gotoMouvements(mov)">Back</button>
+  </p>
+</div>

@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { Mouvement } from './Mouvement';
 import { MouvementS } from './mock-mouvements';
 import { MessageService } from '../common/services/message.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -19,10 +20,12 @@ export class MouvementService {
     return of(MouvementS);
   }
 
-  getMouvement(): Mouvement {
+  getMouvement(id: number | string) {
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
-    return MouvementS[0];
+    return this.getMouvementes().pipe(
+      map((mouvements: Mouvement[]) => mouvements.find(m => m.id === +id))
+    );
   }
 }
 

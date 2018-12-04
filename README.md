@@ -48,6 +48,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 9)add mouvements/mock-mouvements.ts
 10)ng generate service common/services/message
 11)ng generate component mouvements/mouvement-detail
+12)
 
 
 
