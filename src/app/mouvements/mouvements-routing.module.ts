@@ -10,11 +10,11 @@ import { MouvementDetailResolverService } from './mouvement-detail/mouvement-det
 //   {
 //     path: 'mouvements',
 //     component: MouvementListComponent,
-//     // canActivate: [AuthGuard],
+//     canActivate: [AuthGuard],
 //     children: [
 //       {
 //         path: '',
-//         // canActivateChild: [AuthGuard],
+//         canActivateChild: [AuthGuard],
 //         children: [
 //           { path: ':id', component: MouvementDetailComponent },
 //           { path: 'pesee', component: MouvementPeseeComponent }

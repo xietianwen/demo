@@ -53,6 +53,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 13)ng generate service auth/auth
 14)ng generate component auth/login
 15)ng generate module auth/auth --module app --flat --routing
+16)ng generate service mouvements/mouvement-detail/mouvement-detail-resolve
+
 
 
 
