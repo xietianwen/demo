@@ -1,13 +1,13 @@
 <h2>MOUVEMENTS</h2>
-<div *ngIf="mouvement$ | async as mov">
-  <h3>"{{ mov.name }}"</h3>
+<div *ngIf="mouvement">
+  <h3>"{{ mouvement.name }}"</h3>
   <div>
-    <label>Id: </label>{{ mov.id }}</div>
+    <label>Id: </label>{{ mouvement.id }}</div>
   <div>
     <label>Name: </label>
-    <input [(ngModel)]="mov.name" placeholder="mov"/>
+    <input [(ngModel)]="mouvement.name" placeholder="mouvement"/>
   </div>
   <p>
-    <button (click)="gotoMouvements(mov)">Back</button>
+    <button (click)="gotoMouvements(mouvement)">Back</button>
   </p>
 </div>

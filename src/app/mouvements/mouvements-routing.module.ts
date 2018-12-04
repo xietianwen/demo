@@ -4,6 +4,7 @@ import { MouvementDetailComponent } from './mouvement-detail/mouvement-detail.co
 import { MouvementListComponent } from './mouvement-list/mouvement-list.component';
 import { MouvementPeseeComponent } from './mouvement-pesee/mouvement-pesee.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { MouvementDetailResolverService } from './mouvement-detail/mouvement-detail-resolver.service';
 
 // const mouvementsRoutes: Routes = [
 //   {
@@ -31,7 +32,10 @@ const mouvementsRoutes: Routes = [
   },
   {
     path: 'mouvements/:id',
-    component: MouvementDetailComponent
+    component: MouvementDetailComponent,
+    resolve: {
+      mov: MouvementDetailResolverService
+    }
   },
   {
     path: 'mouvements/pesee',

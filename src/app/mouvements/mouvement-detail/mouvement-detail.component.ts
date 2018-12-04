@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./mouvement-detail.component.scss']
 })
 export class MouvementDetailComponent implements OnInit {
-  mouvement$: Observable<Mouvement>;
+  mouvement: Mouvement;
 
   constructor(
     private route: ActivatedRoute,
@@ -19,11 +19,17 @@ export class MouvementDetailComponent implements OnInit {
     private service: MouvementService
   ) { }
 
+  // ngOnInit() {
+  //   this.mouvement$ = this.route.paramMap.pipe(
+  //     switchMap((params: ParamMap) =>
+  //       this.service.getMouvement(params.get('id')))
+  //   );
+  // }
+
   ngOnInit() {
-    this.mouvement$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) =>
-        this.service.getMouvement(params.get('id')))
-    );
+    this.route.data.subscribe((data: { mov: Mouvement }) => {
+      this.mouvement = data.mov;
+    });
   }
 
   gotoMouvements(mov: Mouvement) {
