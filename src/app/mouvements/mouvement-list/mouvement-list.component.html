@@ -2,7 +2,7 @@
 <ul class="mouvementes">
   <li *ngFor="let mouvement of mouvementes$ | async"
     [class.selected]="mouvement.id === selectedId">
-    <a [routerLink]="['/mouvement', mouvement.id]">
+    <a [routerLink]="['/mouvements', mouvement.id]">
       <span class="badge">{{ mouvement.id }}</span>{{ mouvement.name }}
     </a>
   </li>

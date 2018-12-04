@@ -48,7 +48,11 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 9)add mouvements/mock-mouvements.ts
 10)ng generate service common/services/message
 11)ng generate component mouvements/mouvement-detail
-12)
+###auth & login
+12)ng generate guard auth/auth
+13)ng generate service auth/auth
+14)ng generate component auth/login
+15)ng generate module auth/auth --module app --flat --routing
 
 
 

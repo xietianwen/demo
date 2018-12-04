@@ -5,9 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { MouvementsRoutingModule } from './mouvements-routing.module';
 import { MouvementDetailComponent } from './mouvement-detail/mouvement-detail.component';
 import { MouvementListComponent } from './mouvement-list/mouvement-list.component';
+import { MouvementPeseeComponent } from './mouvement-pesee/mouvement-pesee.component';
 
 @NgModule({
-  declarations: [MouvementDetailComponent, MouvementListComponent],
+  declarations: [MouvementDetailComponent, MouvementListComponent, MouvementPeseeComponent],
   imports: [
     CommonModule,
     FormsModule,
