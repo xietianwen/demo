@@ -25,3 +25,26 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+1)npm install -g @angular/cli
+2)ng new jason-project-v1 => routing ok
+3)ng generate component mouvement-list
+4)ng generate component page-not-found
+5)update file app/app-routing.module.ts
+
+    const appRoutes: Routes = [
+    { path: 'crisis-center', component: CrisisListComponent },
+    { path: 'heroes',        component: HeroListComponent },
+    { path: '',   redirectTo: '/heroes', pathMatch: 'full' },
+    { path: '**', component: PageNotFoundComponent }
+    ];
+    
+    imports: [RouterModule.forRoot(appRoutes, { enableTracing: true })],
+
+6)
+
+
+
+
+

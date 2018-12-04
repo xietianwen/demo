@@ -3,10 +3,18 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CrisisListComponent } from './crisis-list/crisis-list.component';
+import { HeroListComponent } from './hero-list/hero-list.component';
+import { MouvementListComponent } from './mouvement-list/mouvement-list.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CrisisListComponent,
+    HeroListComponent,
+    MouvementListComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
