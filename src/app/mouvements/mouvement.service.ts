@@ -6,18 +6,20 @@ import { Mouvement } from './Mouvement';
 import { MouvementS } from './mock-mouvements';
 import { MessageService } from '../common/services/message.service';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MouvementService {
 
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService,private http: HttpClient) { }
 
   getMouvementes(): Observable<Mouvement[]> {
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
-    return of(MouvementS);
+    return this.http.get<Mouvement[]>('https://tiannetcoreapisupinfo.azurewebsites.net/NoteDeFrais')
+    // return of(MouvementS);
   }
 
   getMouvement(id: number | string) {
