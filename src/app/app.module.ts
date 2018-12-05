@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -9,8 +10,9 @@ import { HeroListComponent } from './hero-list/hero-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { MouvementsModule } from './mouvements/mouvements.module';
 import { AuthModule } from './auth/auth.module';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerModule, SwUpdate, SwPush } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
     HttpClientModule,
     MouvementsModule,
     AuthModule,
@@ -30,4 +34,20 @@ import { environment } from '../environments/environment';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(udpate: SwUpdate, push: SwPush, snackbar: MatSnackBar) {
+    udpate.available.subscribe(update => {
+      console.log('update available');
+      const snack = snackbar.open('Update available ', 'Reload');
+      snack.onAction()
+      .subscribe(() => {
+        window.location.reload();
+      });
+    });
+
+    push.messages.subscribe(msg => {
+      console.log(msg);
+      snackbar.open(JSON.stringify(msg));
+    });
+  }
+}
