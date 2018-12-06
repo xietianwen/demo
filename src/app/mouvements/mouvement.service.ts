@@ -7,15 +7,17 @@ import { MouvementS } from './mock-mouvements';
 import { MessageService } from '../common/services/message.service';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { OfflineDBService } from '../common/services/offline-db.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MouvementService {
 
-  constructor(private messageService: MessageService,private http: HttpClient) { }
+  constructor(private messageService: MessageService, private http: HttpClient, private offlineDbService: OfflineDBService) { }
 
   getMouvementes(): Observable<Mouvement[]> {
+    console.log('getMouvementes');
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
     return this.http.get<Mouvement[]>('https://tiannetcoreapisupinfo.azurewebsites.net/NoteDeFrais')
@@ -23,6 +25,8 @@ export class MouvementService {
   }
 
   getMouvement(id: number | string) {
+
+    console.log('getMouvement');
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
     return this.getMouvementes().pipe(
