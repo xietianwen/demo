@@ -55,7 +55,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 15)ng generate module auth/auth --module app --flat --routing
 16)ng generate service mouvements/mouvement-detail/mouvement-detail-resolve
 17)ng generate service common/services/offlineDB
-18)
+18)ng generate component  mouvements/mouvement-edit
+19)
 
 
 

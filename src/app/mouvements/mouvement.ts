@@ -1,8 +1,10 @@
 export class Mouvement {
-    id: number;
-    name: string;
-    constructor(id: number, name: string) {
-        this.id = id;
-        this.name = name;
+    Id: number;
+    Name: string;
+    Poids: number;
+    constructor(id: number, name: string,poids: number) {
+        this.Id = id;
+        this.Name = name;
+        this.Poids = poids;
     }
 }

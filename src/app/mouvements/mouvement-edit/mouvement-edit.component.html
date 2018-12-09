@@ -1,0 +1,14 @@
+<form [formGroup]="mouvementForm" (ngSubmit)="onSubmit()">
+  <label>
+    Name:
+    <input type="text" formControlName="Name" required>
+  </label>
+
+  <label>
+    Poids:
+    <input type="text" formControlName="Poids">
+  </label>
+
+  <button type="submit" [disabled]="!mouvementForm.valid">Submit</button>
+</form>
+

@@ -5,6 +5,7 @@ import { MouvementListComponent } from './mouvement-list/mouvement-list.componen
 import { MouvementPeseeComponent } from './mouvement-pesee/mouvement-pesee.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { MouvementDetailResolverService } from './mouvement-detail/mouvement-detail-resolver.service';
+import { MouvementEditComponent } from './mouvement-edit/mouvement-edit.component';
 
 // const mouvementsRoutes: Routes = [
 //   {
@@ -26,12 +27,18 @@ import { MouvementDetailResolverService } from './mouvement-detail/mouvement-det
 
 const mouvementsRoutes: Routes = [
   {
+    path: 'mouvements/add',
+    component: MouvementEditComponent
+  },
+  {
     path: 'mouvements',
+    pathMatch:'full',
     canActivate: [AuthGuard],
     component: MouvementListComponent
   },
   {
-    path: 'mouvements/:id',
+    path: 'mouvements/detail/:id',
+    pathMatch:'full',
     component: MouvementDetailComponent,
     resolve: {
       mov: MouvementDetailResolverService

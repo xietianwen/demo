@@ -5,39 +5,53 @@ import { Observable, of } from 'rxjs';
 import { Mouvement } from './Mouvement';
 import { MouvementS } from './mock-mouvements';
 import { MessageService } from '../common/services/message.service';
-import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OfflineDBService } from '../common/services/offline-db.service';
+import { environment } from 'src/environments/environment';
+// import { HandleError, HttpErrorHandler } from '../common/services/http-error-handler.service';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+  })
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class MouvementService {
+  url = environment.jasonApiUrl + '/mouvements';
+  // private handleError: HandleError;
 
-  constructor(private messageService: MessageService, private http: HttpClient, private offlineDbService: OfflineDBService) { }
+  constructor(
+    private messageService: MessageService, 
+    private http: HttpClient, 
+    // httpErrorHandler: HttpErrorHandler,
+    private offlineDbService: OfflineDBService) {
+      // this.handleError = httpErrorHandler.createHandleError('MouvementService');
+  }
 
   getMouvementes(): Observable<Mouvement[]> {
     console.log('getMouvementes');
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
-    return this.http.get<Mouvement[]>('https://tiannetcoreapisupinfo.azurewebsites.net/NoteDeFrais')
-    // return of(MouvementS);
+    return this.http.get<Mouvement[]>(this.url)
   }
 
   getMouvement(id: number | string) {
-
     console.log('getMouvement');
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
     return this.getMouvementes().pipe(
-      map((mouvements: Mouvement[]) => mouvements.find(m => m.id === +id))
+      map((mouvements: Mouvement[]) => mouvements.find(m => m.Id === +id))
     );
   }
+
+  addMouvement(mouvement: Mouvement): Observable<Mouvement>{
+    return this.http.post<Mouvement>(this.url, mouvement, httpOptions)
+      .pipe(
+        // catchError(this.handleError('addMouvement', mouvement))
+      );
+  }
 }
-
-
-/*
-Copyright 2017-2018 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

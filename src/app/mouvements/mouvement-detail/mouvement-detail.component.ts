@@ -33,7 +33,7 @@ export class MouvementDetailComponent implements OnInit {
   }
 
   gotoMouvements(mov: Mouvement) {
-    const movId = mov ? mov.id : null;
+    const movId = mov ? mov.Id : null;
     // Pass along the hero id if available
     // so that the HeroList component can select that hero.
     // Include a junk 'foo' property for fun.
