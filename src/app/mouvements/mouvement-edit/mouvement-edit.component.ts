@@ -25,8 +25,8 @@ export class MouvementEditComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('urlllllllllllllllllllllll:',this.route.snapshot.url);
-    this.isEdit =  this.route.snapshot.url.filter(p => p.path=='add').length == 0;
+    console.log('urlllllllllllllllllllllll:', this.route.snapshot.url);
+    this.isEdit = this.route.snapshot.url.filter(p => p.path === 'add').length === 0;
   }
 
   onSubmit() {
@@ -34,12 +34,12 @@ export class MouvementEditComponent implements OnInit {
     console.warn(this.mouvementForm.value);
 
     const newMov: Mouvement = this.mouvementForm.value as Mouvement;
-    console.log('new Mouvement :',newMov);
+    console.log('new Mouvement :', newMov);
 
     this.service.addMouvement(newMov)
-    .subscribe(mov => {
-      this.router.navigate(['/mouvements']);
-    });
-    
+      .subscribe(mov => {
+        this.router.navigate(['/mouvements']);
+      });
+
   }
 }

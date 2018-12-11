@@ -1,22 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Mouvement } from './mouvements/mouvement';
 import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
+import { ShareService } from './common/services/share.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   status: OnlineStatusType;
   OnlineStatusType = OnlineStatusType;
   title = 'jason-project-v1';
-  testMov: Mouvement = new Mouvement(1111, 'XXXXX',1000);
+  testMov: Mouvement = new Mouvement(1111, 'XXXXX', 1000);
 
-  constructor(private onlineStatusService: OnlineStatusService) {
-    this.onlineStatusService.status.subscribe((status: OnlineStatusType) => {
-      // use status
-      this.status = status;
+  constructor(private statusService: OnlineStatusService) {
+  }
+  ngOnInit(): void {
+    this.statusService.status.subscribe(s => {
+      this.status = s;
     });
   }
 }

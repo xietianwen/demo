@@ -9,11 +9,13 @@ import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OfflineDBService } from '../common/services/offline-db.service';
 import { environment } from 'src/environments/environment';
+import { OnlineStatusType } from 'ngx-online-status';
+import { ShareService } from '../common/services/share.service';
 // import { HandleError, HttpErrorHandler } from '../common/services/http-error-handler.service';
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type':  'application/json'
+    'Content-Type': 'application/json'
   })
 };
 
@@ -25,18 +27,22 @@ export class MouvementService {
   // private handleError: HandleError;
 
   constructor(
-    private messageService: MessageService, 
-    private http: HttpClient, 
+    private messageService: MessageService,
+    private http: HttpClient,
+    private shareService: ShareService,
     // httpErrorHandler: HttpErrorHandler,
     private offlineDbService: OfflineDBService) {
-      // this.handleError = httpErrorHandler.createHandleError('MouvementService');
+    // this.handleError = httpErrorHandler.createHandleError('MouvementService');
   }
 
   getMouvementes(): Observable<Mouvement[]> {
+
+    console.log('shareservice status :', this.shareService.status);
+
     console.log('getMouvementes');
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
-    return this.http.get<Mouvement[]>(this.url)
+    return this.http.get<Mouvement[]>(this.url);
   }
 
   getMouvement(id: number | string) {
@@ -48,10 +54,14 @@ export class MouvementService {
     );
   }
 
-  addMouvement(mouvement: Mouvement): Observable<Mouvement>{
-    return this.http.post<Mouvement>(this.url, mouvement, httpOptions)
-      .pipe(
-        // catchError(this.handleError('addMouvement', mouvement))
-      );
+  addMouvement(mouvement: Mouvement): Observable<Mouvement> {
+    if (this.shareService.status === OnlineStatusType.OFFLINE) {
+      return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
+    } else {
+      return this.http.post<Mouvement>(this.url, mouvement, httpOptions)
+        .pipe(
+          // catchError(this.handleError('addMouvement', mouvement))
+        );
+    }
   }
 }

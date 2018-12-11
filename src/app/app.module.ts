@@ -16,6 +16,8 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material';
 import { OfflineDBService } from './common/services/offline-db.service';
 import { OnlineStatusModule } from 'ngx-online-status';
 
+
+
 @NgModule({
   declarations: [
     AppComponent,

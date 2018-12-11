@@ -32,13 +32,13 @@ const mouvementsRoutes: Routes = [
   },
   {
     path: 'mouvements',
-    pathMatch:'full',
+    pathMatch: 'full',
     canActivate: [AuthGuard],
     component: MouvementListComponent
   },
   {
     path: 'mouvements/detail/:id',
-    pathMatch:'full',
+    pathMatch: 'full',
     component: MouvementDetailComponent,
     resolve: {
       mov: MouvementDetailResolverService
