@@ -23,16 +23,5 @@
       }
     }
   ],
-  "dataGroups": [
-    {
-      "name": "get",
-      "urls":["https://tiannetcoreapisupinfo.azurewebsites.net/NoteDeFrais"],
-      "cacheConfig": {
-        "maxSize":5,
-        "maxAge":"1d",
-        "timeout":"10s",
-        "strategy":"freshness"
-      }
-    }
-  ]
+  "dataGroups": []
 }

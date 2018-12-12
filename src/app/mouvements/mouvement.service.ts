@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, of } from 'rxjs';
+import { Observable, from } from 'rxjs';
 
 import { Mouvement } from './Mouvement';
-import { MouvementS } from './mock-mouvements';
 import { MessageService } from '../common/services/message.service';
 import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -25,7 +24,6 @@ const httpOptions = {
 export class MouvementService {
   url = environment.jasonApiUrl + '/mouvements';
   // private handleError: HandleError;
-
   constructor(
     private messageService: MessageService,
     private http: HttpClient,
@@ -36,13 +34,12 @@ export class MouvementService {
   }
 
   getMouvementes(): Observable<Mouvement[]> {
-
-    console.log('shareservice status :', this.shareService.status);
-
-    console.log('getMouvementes');
-    // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
-    return this.http.get<Mouvement[]>(this.url);
+    if (this.shareService.status === OnlineStatusType.OFFLINE) {
+      return from(this.offlineDbService.getAll('mouvement'));
+    } else {
+      return this.http.get<Mouvement[]>(this.url);
+    }
   }
 
   getMouvement(id: number | string) {
@@ -54,14 +51,12 @@ export class MouvementService {
     );
   }
 
-  addMouvement(mouvement: Mouvement): Observable<Mouvement> {
+  addMouvement(mouvement: Mouvement): Observable<any> {
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
-      return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
+      mouvement.Action = 'Add';
+      return from(this.offlineDbService.add('mouvement', mouvement));
     } else {
-      return this.http.post<Mouvement>(this.url, mouvement, httpOptions)
-        .pipe(
-          // catchError(this.handleError('addMouvement', mouvement))
-        );
+      return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
     }
   }
 }

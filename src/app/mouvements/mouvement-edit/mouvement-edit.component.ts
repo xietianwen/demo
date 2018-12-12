@@ -40,6 +40,5 @@ export class MouvementEditComponent implements OnInit {
       .subscribe(mov => {
         this.router.navigate(['/mouvements']);
       });
-
   }
 }

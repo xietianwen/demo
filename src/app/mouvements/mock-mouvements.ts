@@ -1,7 +1,7 @@
 import { Mouvement } from './mouvement';
 
 export const MouvementS: Mouvement[] = [
-  { Id: 11, Name: 'Mr. Nice',Poids:110 }
+  { Id: 11, Name: 'Mr. Nice', Poids: 110 }
 ];
 
 
