@@ -9,7 +9,8 @@ import { Mouvement } from 'src/app/mouvements/mouvement';
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
   })
 };
 
@@ -30,20 +31,17 @@ export class ShareService {
     });
   }
 
-  private synchroniseDataToServer() {
+  private async synchroniseDataToServer() {
     if (this.status === OnlineStatusType.ONLINE) {
       // sychronise the data
       console.log('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSynchrooooooooooooo');
 
-      from(this.offlineDbService.getAll('Mouvement')).pipe(
-        map(
-          (mouvementArray: Object[]) => mouvementArray.map(m => Mouvement.fromJson(m))
-        )
-      );
+      let offlineMouvement = await this.offlineDbService.getAll('mouvement');
+      console.log('offlineMouvement :', offlineMouvement);
+
+      this.http.post(this.url + '/Synchronise', {'mouvementListSync':offlineMouvement}, httpOptions).subscribe(x => console.log('finish'));
 
 
-
-      return this.http.post(this.url + '/Mouvement', null, httpOptions);
     }
   }
 }

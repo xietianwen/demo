@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   title = 'jason-project-v1';
   testMov: Mouvement = new Mouvement(1111, 'XXXXX', 1000);
 
-  constructor(private statusService: OnlineStatusService) {
+  constructor(private statusService: OnlineStatusService, private shareService: ShareService ) {
   }
   ngOnInit(): void {
     this.statusService.status.subscribe(s => {
