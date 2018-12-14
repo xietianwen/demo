@@ -19,6 +19,11 @@ export class MouvementDetailResolverService implements Resolve<Mouvement> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Mouvement> | Observable<never> {
     const id = route.paramMap.get('id');
 
+    this.ms.getMouvement(id).toPromise().then(c => console.log('CCCCCCCCCCCCCCCCCCCCC :', c));
+
+    return this.ms.getMouvement(id);
+
+    /*
     return this.ms.getMouvement(id).pipe(
       take(1),
       mergeMap(mov => {
@@ -30,5 +35,6 @@ export class MouvementDetailResolverService implements Resolve<Mouvement> {
         }
       })
     );
+    */
   }
 }

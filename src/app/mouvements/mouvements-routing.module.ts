@@ -38,7 +38,6 @@ const mouvementsRoutes: Routes = [
   },
   {
     path: 'mouvements/detail/:id',
-    pathMatch: 'full',
     component: MouvementDetailComponent,
     resolve: {
       mov: MouvementDetailResolverService

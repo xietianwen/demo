@@ -4,7 +4,7 @@ import { Observable, from } from 'rxjs';
 
 import { Mouvement } from './Mouvement';
 import { MessageService } from '../common/services/message.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OfflineDBService } from '../common/services/offline-db.service';
 import { environment } from 'src/environments/environment';
@@ -38,7 +38,13 @@ export class MouvementService {
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
       return from(this.offlineDbService.getAll('mouvement'));
     } else {
-      return this.http.get<Mouvement[]>(this.url);
+      return this.http.get<Mouvement[]>(this.url).pipe(
+        // map((mouvements: Mouvement[]) => mouvements.map(m => Mouvement.fromJson(m))),
+
+        tap(
+          data => console.log('data :', data)
+        )
+      );
     }
   }
 
@@ -47,13 +53,19 @@ export class MouvementService {
     // TODO: send the message _after_ fetching the Mouvementes
     this.messageService.add('MouvementService: fetched Mouvementes');
     return this.getMouvementes().pipe(
-      map((mouvements: Mouvement[]) => mouvements.find(m => m.Id === +id))
+      tap(
+        data => {
+          console.log('getMouvement data :', data);
+          console.log('data.find(m => m.Id === +id)', data.find(m => m.id === +id));
+        }
+      ),
+      map((mouvements: Mouvement[]) => mouvements.find(m => m.id === +id))
     );
   }
 
   addMouvement(mouvement: Mouvement): Observable<any> {
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
-      mouvement.Action = 'Add';
+      mouvement.action = 'Add';
       return from(this.offlineDbService.add('mouvement', mouvement));
     } else {
       return this.http.post<Mouvement>(this.url, mouvement, httpOptions);

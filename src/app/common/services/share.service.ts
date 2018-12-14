@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OfflineDBService } from './offline-db.service';
 import { from } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { Mouvement } from 'src/app/mouvements/mouvement';
 
 const httpOptions = {
@@ -18,7 +18,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class ShareService {
-  url = environment.jasonApiUrl;
+  urlSynchro = environment.jasonApiUrl + '/Synchronise';
   status: OnlineStatusType = OnlineStatusType.ONLINE;
 
   constructor(private onlineStatusService: OnlineStatusService,
@@ -27,21 +27,47 @@ export class ShareService {
     console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC ShareService');
     this.onlineStatusService.status.subscribe((status: OnlineStatusType) => {
       this.status = status;
-      this.synchroniseDataToServer();
+      this.synchroniseDataToServer().then(() => {
+        window.location.reload();
+      });
     });
   }
 
-  private async synchroniseDataToServer() {
+  public async synchroniseDataToServer() {
     if (this.status === OnlineStatusType.ONLINE) {
       // sychronise the data
-      console.log('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSynchrooooooooooooo');
+      const offlineMouvement = await this.offlineDbService.getAll('mouvement');
+      console.log('offlineMouvement :', offlineMouvement.filter(m => m.action == null));
 
-      let offlineMouvement = await this.offlineDbService.getAll('mouvement');
-      console.log('offlineMouvement :', offlineMouvement);
+      const dataToSend = offlineMouvement.filter(m => m.action != null);
+      if (dataToSend.length > 0) {
+        const returnFromSynchro = await this.http
+          .post(this.urlSynchro, { 'mouvementListSync': offlineMouvement.filter(m => m.action != null) }, httpOptions)
+          .toPromise();
 
-      this.http.post(this.url + '/Synchronise', {'mouvementListSync':offlineMouvement}, httpOptions).subscribe(x => console.log('finish'));
-
-
+        if (returnFromSynchro && returnFromSynchro['success']) {
+          console.log('successssssssssss', returnFromSynchro);
+          this.refreshMouvementDataOffline(returnFromSynchro['data']['mouvementList']);
+        }
+      } else {
+        this.synchroDataFromServer();
+      }
     }
+  }
+
+  private async synchroDataFromServer() {
+    const result = await this.http.get(this.urlSynchro).toPromise();
+    if (result && result['success']) {
+      console.log('synchroDataFromServer success', result);
+      return this.refreshMouvementDataOffline(result['data']['mouvementList']);
+    }
+  }
+
+  private refreshMouvementDataOffline(mouvementList) {
+    return this.offlineDbService
+      .clearDB()
+      .then(() => {
+        return this.offlineDbService.addAll('mouvement', mouvementList);
+      });
   }
 }

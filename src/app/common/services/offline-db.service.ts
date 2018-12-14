@@ -152,10 +152,18 @@ export class OfflineDBService {
   }
 
   createTestData() {
-    this.add('books', [
+    this.addAll('books', [
       { id: '006251587X', title: 'Weaving the Web', year: 2000, edition: 2 },
       { id: '0465026567', title: 'Gödel, Escher, Bach', year: 1999 },
       { id: '0465030793', title: 'I Am a Strange Loop', year: 2008 }
+    ]);
+
+    this.addAll('mouvement', [
+      { name: '1', poids: 1, action: 'Add' },
+      { name: '2', poids: 2, action: 'Add' },
+      { name: '3', poids: 3, action: 'Add' },
+      { name: '4', poids: 4, action: 'Add' },
+      { name: '5', poids: 5, action: 'Add' }
     ]);
   }
 }

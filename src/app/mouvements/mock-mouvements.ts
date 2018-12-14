@@ -1,8 +1,6 @@
 import { Mouvement } from './mouvement';
 
-export const MouvementS: Mouvement[] = [
-  { Id: 11, Name: 'Mr. Nice', Poids: 110 }
-];
+export const MouvementS: Mouvement[] = [];
 
 
 /*

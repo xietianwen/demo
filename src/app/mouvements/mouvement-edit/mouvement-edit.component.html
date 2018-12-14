@@ -1,12 +1,12 @@
 <form [formGroup]="mouvementForm" (ngSubmit)="onSubmit()">
   <label>
     Name:
-    <input type="text" formControlName="Name" required>
+    <input type="text" formControlName="name" required>
   </label>
 
   <label>
     Poids:
-    <input type="text" formControlName="Poids">
+    <input type="text" formControlName="poids">
   </label>
 
   <button type="submit" [disabled]="!mouvementForm.valid">Submit</button>

@@ -29,11 +29,12 @@ export class MouvementDetailComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe((data: { mov: Mouvement }) => {
       this.mouvement = data.mov;
+      console.log('line 32 data:', data);
     });
   }
 
   gotoMouvements(mov: Mouvement) {
-    const movId = mov ? mov.Id : null;
+    const movId = mov ? mov.id : null;
     // Pass along the hero id if available
     // so that the HeroList component can select that hero.
     // Include a junk 'foo' property for fun.

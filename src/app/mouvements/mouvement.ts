@@ -1,22 +1,22 @@
 export class Mouvement {
-    Id: number;
-    Name: string;
-    Poids: number;
-    Action?: string;
+    id: number;
+    name: string;
+    poids: number;
+    action?: string;
 
     public static fromJson(json: Object): Mouvement {
         return new Mouvement(
-            json['Id'],
-            json['Name'],
-            json['Poids'],
-            ( json['Action'] != null && json['Action'] !== undefined) ? json['Action'] : null
+            json['id'],
+            json['name'],
+            json['poids'],
+            ( json['action'] != null && json['action'] !== undefined) ? json['action'] : null
         );
     }
 
     constructor(id: number, name: string, poids: number, action?: string) {
-        this.Id = id;
-        this.Name = name;
-        this.Poids = poids;
-        this.Action = action;
+        this.id = id;
+        this.name = name;
+        this.poids = poids;
+        this.action = action;
     }
 }

@@ -13,8 +13,8 @@ export class MouvementEditComponent implements OnInit {
   isEdit: boolean;
 
   mouvementForm = this.fb.group({
-    Name: ['', Validators.required],
-    Poids: ['']
+    name: ['', Validators.required],
+    poids: ['']
   });
 
   constructor(

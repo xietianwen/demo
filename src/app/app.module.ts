@@ -15,6 +15,7 @@ import { environment } from '../environments/environment';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material';
 import { OfflineDBService } from './common/services/offline-db.service';
 import { OnlineStatusModule } from 'ngx-online-status';
+import { ShareService } from './common/services/share.service';
 
 
 @NgModule({
@@ -39,19 +40,18 @@ import { OnlineStatusModule } from 'ngx-online-status';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(udpate: SwUpdate, push: SwPush, snackbar: MatSnackBar, offlineDBService: OfflineDBService) {
+  constructor(udpate: SwUpdate, push: SwPush, snackbar: MatSnackBar, offlineDBService: OfflineDBService, shareService: ShareService) {
     console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
     // offlineDBService.open();
-
     udpate.available.subscribe(update => {
       console.log('update available');
-      /*
       const snack = snackbar.open('Update available ', 'Reload');
       snack.onAction()
       .subscribe(() => {
-        window.location.reload();
+        shareService.synchroniseDataToServer().then(() => {
+          window.location.reload();
+        });
       });
-      */
     });
 
     push.messages.subscribe(msg => {
@@ -59,6 +59,7 @@ export class AppModule {
       snackbar.open(JSON.stringify(msg));
     });
 
+    /*
     const snack = snackbar.open('Clear DB ?', 'Clear');
       snack.onAction()
       .subscribe(() => {
@@ -69,8 +70,7 @@ export class AppModule {
     snack2.onAction()
       .subscribe(() => {
         offlineDBService.createTestData();
-        offlineDBService.createTestData();
-        offlineDBService.createTestData();
       });
+      */
   }
 }
