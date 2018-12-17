@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Mouvement } from './mouvements/mouvement';
-import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
+
+import { ConnectionService } from 'ng-connection-service';
+import { OnlineStatusType } from './common/enums/OnlineStatusType';
 import { ShareService } from './common/services/share.service';
+
 
 @Component({
   selector: 'app-root',
@@ -10,15 +13,17 @@ import { ShareService } from './common/services/share.service';
 })
 export class AppComponent implements OnInit {
   status: OnlineStatusType;
-  OnlineStatusType = OnlineStatusType;
   title = 'jason-project-v1';
   testMov: Mouvement = new Mouvement(1111, 'XXXXX', 1000);
 
-  constructor(private statusService: OnlineStatusService, private shareService: ShareService ) {
+  constructor(private shareService: ShareService) {
   }
+
   ngOnInit(): void {
-    this.statusService.status.subscribe(s => {
-      this.status = s;
+    this.status = this.shareService.status;
+    this.shareService.statusChanged.subscribe(changed => {
+      this.status = this.shareService.status;
+      console.log('this.status :', this.shareService.status);
     });
   }
 }

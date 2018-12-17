@@ -5,6 +5,8 @@ import { MouvementService } from '../mouvement.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
+import { ShareService } from 'src/app/common/services/share.service';
+import { SynchroniseStatusType } from 'src/app/common/enums/OnlineStatusType';
 
 @Component({
   selector: 'app-mouvementes',
@@ -19,7 +21,8 @@ export class MouvementListComponent implements OnInit {
 
   constructor(
     private service: MouvementService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private shareService: ShareService,
   ) { }
 
   ngOnInit() {
@@ -43,6 +46,23 @@ export class MouvementListComponent implements OnInit {
         return this.service.getMouvementes();
       })
     );
+
+    this.initRefreshDataListenner();
+  }
+
+  initRefreshDataListenner() {
+    this.shareService.statusSynchronise.subscribe((statusSynchronise) => {
+      if (statusSynchronise === SynchroniseStatusType.Synchronised) {
+        console.log('initRefreshDataListenner statusSynchronise :', statusSynchronise);
+        this.mouvementes$ = this.route.paramMap.pipe(
+          switchMap(params => {
+            // (+) before `params.get()` turns the string into a number
+            this.selectedId = +params.get('id');
+            return this.service.getMouvementes();
+          })
+        );
+      }
+    });
   }
 }
 

@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit, NgZone } from '@angular/core';
 import { ConnectionService } from 'ng-connection-service';
 
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OfflineDBService } from './offline-db.service';
-import { OnlineStatusType, SynchroniseStatusType } from '../enums/OnlineStatusType';
-import { Observable, of, Subject } from 'rxjs';
+import { OnlineStatusType } from '../enums/OnlineStatusType';
+import { Observable, of } from 'rxjs';
 
 export const httpOptions = {
   headers: new HttpHeaders({
@@ -19,35 +19,40 @@ export const httpOptions = {
 })
 export class ShareService {
   urlSynchro = environment.jasonApiUrl + '/Synchronise';
-  status: OnlineStatusType;
-  statusChanged:  Subject<boolean> = new Subject<boolean>();
-  statusSynchronise: Subject<SynchroniseStatusType> = new Subject<SynchroniseStatusType>();
+  status: OnlineStatusType = navigator.onLine ? OnlineStatusType.ONLINE : OnlineStatusType.OFFLINE;
+  statusChanged: Observable<boolean> = of(false);
   isConnected: boolean;
 
   constructor(private connectionService: ConnectionService,
     private http: HttpClient,
-    private offlineDbService: OfflineDBService) {
-      this.isConnected = navigator.onLine;
-      this.status = navigator.onLine ? OnlineStatusType.ONLINE : OnlineStatusType.OFFLINE;
-      this.statusSynchronise.next(SynchroniseStatusType.SyncroniseUndefined);
+    private offlineDbService: OfflineDBService,
+    private zone: NgZone) {
+    console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC ShareService');
+    this.status = navigator.onLine ? OnlineStatusType.ONLINE : OnlineStatusType.OFFLINE;
+    console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC ShareService this.status :', this.status);
 
-      this.connectionService.monitor().subscribe((isConnected: boolean) => {
-        const changed = this.isConnected !== isConnected;
-        this.isConnected = isConnected;
-        this.status = isConnected ? OnlineStatusType.ONLINE : OnlineStatusType.OFFLINE;
-        this.statusChanged.next(changed);
+    this.connectionService.monitor().subscribe((isConnected: boolean) => {
+      this.isConnected = isConnected;
+      this.initStatusChanged(isConnected);
+      this.statusChanged.subscribe(changed => {
+        if (changed) {
 
-        if (changed && isConnected) {
-          this.statusSynchronise.next(SynchroniseStatusType.Synchronising);
+          console.log('changeddddddddddddddddddddddddddddddddddddddd:',changed);
+          this.status = this.isConnected ? OnlineStatusType.ONLINE : OnlineStatusType.OFFLINE;
           this.synchroniseDataToServer().then(() => {
             if (this.status === OnlineStatusType.ONLINE) {
-              this.statusSynchronise.next(SynchroniseStatusType.Synchronised);
-              this.statusSynchronise.next(SynchroniseStatusType.SyncroniseUndefined);
+              // window.location.reload();
             }
           });
         }
       });
+    });
   }
+
+  private initStatusChanged(isConnected: boolean) {
+    this.statusChanged = of((this.status === (isConnected ? OnlineStatusType.ONLINE : OnlineStatusType.OFFLINE)));
+  }
+
 
   public monitor(): Observable<boolean> {
     return this.connectionService.monitor();
@@ -65,7 +70,8 @@ export class ShareService {
           .post(this.urlSynchro, { 'mouvementListSync': offlineMouvement.filter(m => m.action != null) }, httpOptions)
           .toPromise();
 
-        if (returnFromSynchro && returnFromSynchro['success'] && returnFromSynchro['success'] === true) {
+        if (returnFromSynchro && returnFromSynchro['success']) {
+          console.log('successssssssssss', returnFromSynchro);
           this.refreshMouvementDataOffline(returnFromSynchro['data']['mouvementList']);
         }
       } else {

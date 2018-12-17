@@ -14,7 +14,6 @@ import { ServiceWorkerModule, SwUpdate, SwPush } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material';
 import { OfflineDBService } from './common/services/offline-db.service';
-import { OnlineStatusModule } from 'ngx-online-status';
 import { ShareService } from './common/services/share.service';
 
 
@@ -33,7 +32,6 @@ import { ShareService } from './common/services/share.service';
     MouvementsModule,
     AuthModule,
     AppRoutingModule,
-    OnlineStatusModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],

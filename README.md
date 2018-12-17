@@ -57,7 +57,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 17)ng generate service common/services/offlineDB
 18)ng generate component  mouvements/mouvement-edit
 19)ng generate service common/services/share
-20)http-server -p 8080
+20)http-server -p 8080 -c-1 dist/jason-project-v1
 
 
 

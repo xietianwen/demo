@@ -8,15 +8,9 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OfflineDBService } from '../common/services/offline-db.service';
 import { environment } from 'src/environments/environment';
-import { OnlineStatusType } from 'ngx-online-status';
-import { ShareService } from '../common/services/share.service';
+import { ShareService, httpOptions } from '../common/services/share.service';
+import { OnlineStatusType } from '../common/enums/OnlineStatusType';
 // import { HandleError, HttpErrorHandler } from '../common/services/http-error-handler.service';
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json'
-  })
-};
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +28,8 @@ export class MouvementService {
   }
 
   getMouvementes(): Observable<Mouvement[]> {
+    console.log('line 3888888888888888888888888 this.shareService.status:', this.shareService.status);
+
     this.messageService.add('MouvementService: fetched Mouvementes');
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
       return from(this.offlineDbService.getAll('mouvement'));
@@ -64,6 +60,8 @@ export class MouvementService {
   }
 
   addMouvement(mouvement: Mouvement): Observable<any> {
+
+    console.log('addMouvement this.shareService.status :', this.shareService.status);
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
       mouvement.action = 'Add';
       return from(this.offlineDbService.add('mouvement', mouvement));
