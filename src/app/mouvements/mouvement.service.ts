@@ -60,11 +60,24 @@ export class MouvementService {
   }
 
   addMouvement(mouvement: Mouvement): Observable<any> {
-
     console.log('addMouvement this.shareService.status :', this.shareService.status);
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
       mouvement.action = 'Add';
       return from(this.offlineDbService.add('mouvement', mouvement));
+    } else {
+      return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
+    }
+  }
+
+  updateMouvement(mouvement: Mouvement): Observable<any> {
+    if (this.shareService.status === OnlineStatusType.OFFLINE) {
+      mouvement.action = 'Update';
+
+      this.offlineDbService.findByPropertyValue('mouvement', 'id', mouvement.id).then((item) => {
+        console.log('item :', item);
+      });
+
+      //return from(this.offlineDbService.update('mouvement', mo, mouvement));
     } else {
       return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
     }

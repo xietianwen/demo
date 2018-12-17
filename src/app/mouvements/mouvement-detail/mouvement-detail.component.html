@@ -7,6 +7,13 @@
     <label>Name: </label>
     <input [(ngModel)]="mouvement.name" placeholder="mouvement"/>
   </div>
+  <div>
+    <label>Poids: </label>
+    <input [(ngModel)]="mouvement.poids" placeholder="mouvement"/>
+  </div>
+  <div>
+    <button (click)="updateMouvement(mouvement)">Update</button>
+  </div>
   <p>
     <button (click)="gotoMouvements(mouvement)">Back</button>
   </p>
