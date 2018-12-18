@@ -37,7 +37,7 @@ export class MouvementEditComponent implements OnInit {
     console.log('new Mouvement :', newMov);
 
     this.service.addMouvement(newMov)
-      .subscribe(mov => {
+      .then(mov => {
         this.router.navigate(['/mouvements']);
       });
   }

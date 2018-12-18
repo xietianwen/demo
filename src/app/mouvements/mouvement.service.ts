@@ -56,26 +56,27 @@ export class MouvementService {
     );
   }
 
-  addMouvement(mouvement: Mouvement): Observable<any> {
-    console.log('addMouvement this.shareService.status :', this.shareService.status);
-    if (this.shareService.status === OnlineStatusType.OFFLINE) {
-      mouvement.action = 'Add';
+  async addMouvement(mouvement: Mouvement): Promise<any> {
+    if (this.shareService.isConnected) {
+      const result = await this.http.post<Mouvement>(this.url, mouvement, httpOptions).toPromise();
+      mouvement.id = result['createdId'];
       return from(this.offlineDbService.add('mouvement', mouvement));
     } else {
-      return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
+      return from(this.offlineDbService.add('mouvement', mouvement, true));
     }
   }
 
   async updateMouvement(mouvement: Mouvement): Promise<any> {
-    if(this.shareService.isConnected)
-      await this.http.put<Mouvement>(this.url+'/'+mouvement.id, mouvement, httpOptions).toPromise();
+    // online
+    if (this.shareService.isConnected) {
+      await this.http.put<Mouvement>(this.url + '/' + mouvement.id, mouvement, httpOptions).toPromise();
+    }
 
-    const existMouvement = await this.offlineDbService.findByPropertyValue('mouvement','id',mouvement.id) as Mouvement;
-    
-    if(existMouvement != null && existMouvement.offlineId > 0)
-    {
-      Object.assign(existMouvement,mouvement);
-      this.offlineDbService.update('mouvement', existMouvement,!this.shareService.isConnected);
+    // offline
+    const existMouvement = await this.offlineDbService.findByPropertyValue('mouvement', 'id', mouvement.id) as Mouvement;
+    if (existMouvement != null && existMouvement.offlineId > 0) {
+      Object.assign(existMouvement, mouvement);
+      this.offlineDbService.update('mouvement', existMouvement, !this.shareService.isConnected);
     }
   }
 }

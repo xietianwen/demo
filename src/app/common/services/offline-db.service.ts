@@ -31,8 +31,11 @@ export class OfflineDBService {
     }
   }
 
-  add(storeName: string, record: any): Promise<void> {
+  add(storeName: string, record: any, dirtyData: boolean = false): Promise<void> {
     return this.dbPromise.then(async db => {
+      if (dirtyData) {
+        record.action = 'Update';
+      }
       const tx = db.transaction(storeName, 'readwrite');
       tx.objectStore(storeName).add(record);
       return tx.complete;
@@ -75,7 +78,7 @@ export class OfflineDBService {
       if (!cursor) {
         return;
       }
-      console.log('cursor :',cursor.value);
+      console.log('cursor :', cursor.value);
       if (cursor.value[propertyName] === properyValue) {
         return cursor.value;
       } else {
@@ -92,10 +95,11 @@ export class OfflineDBService {
     });
   }
 
-  update(storeName, val,dirtyData:boolean = false): Promise<void> {
+  update(storeName, val, dirtyData: boolean = false): Promise<void> {
     return this.dbPromise.then(db => {
-      if(dirtyData)
+      if (dirtyData) {
         val.action = 'Update';
+      }
       const tx = db.transaction(storeName, 'readwrite');
       tx.objectStore(storeName).put(val);
       return tx.complete;
