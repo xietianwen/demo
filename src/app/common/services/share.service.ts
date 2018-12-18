@@ -66,10 +66,10 @@ export class ShareService {
           .toPromise();
 
         if (returnFromSynchro && returnFromSynchro['success'] && returnFromSynchro['success'] === true) {
-          this.refreshMouvementDataOffline(returnFromSynchro['data']['mouvementList']);
+          // this.refreshMouvementDataOffline(returnFromSynchro['data']['mouvementList']);
         }
       } else {
-        this.synchroDataFromServer();
+        // this.synchroDataFromServer();
       }
     }
   }

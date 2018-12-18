@@ -34,7 +34,7 @@ export class OfflineDBService {
   add(storeName: string, record: any, dirtyData: boolean = false): Promise<void> {
     return this.dbPromise.then(async db => {
       if (dirtyData) {
-        record.action = 'Update';
+        record.action = 'Add';
       }
       const tx = db.transaction(storeName, 'readwrite');
       tx.objectStore(storeName).add(record);

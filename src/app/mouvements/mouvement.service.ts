@@ -27,33 +27,31 @@ export class MouvementService {
     // this.handleError = httpErrorHandler.createHandleError('MouvementService');
   }
 
-  getMouvementes(): Observable<Mouvement[]> {
+  async getMouvementes(): Promise<Mouvement[]> {
     this.messageService.add('MouvementService: fetched Mouvementes');
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
-      return from(this.offlineDbService.getAll('mouvement'));
+      return this.offlineDbService.getAll('mouvement');
     } else {
-      return this.http.get<Mouvement[]>(this.url).pipe(
-        // map((mouvements: Mouvement[]) => mouvements.map(m => Mouvement.fromJson(m))),
-        tap(
-          data => console.log('data :', data)
-        )
-      );
+      const mouvemntsFromServer = await this.http.get<Mouvement[]>(this.url).toPromise();
+      await this.offlineDbService.clear('mouvement');
+      this.offlineDbService.addAll('mouvement', mouvemntsFromServer);
+      return this.offlineDbService.getAll('mouvement');
     }
   }
 
-  getMouvement(id: number | string) {
-    console.log('getMouvement');
-    // TODO: send the message _after_ fetching the Mouvementes
-    this.messageService.add('MouvementService: fetched Mouvementes');
-    return this.getMouvementes().pipe(
-      tap(
-        data => {
-          console.log('getMouvement data :', data);
-          console.log('data.find(m => m.Id === +id)', data.find(m => m.id === +id));
-        }
-      ),
-      map((mouvements: Mouvement[]) => this.findById(mouvements, id))
-    );
+  async getMouvement(offlineId: number): Promise<Mouvement> {
+    /*
+    const mouvementList = await this.offlineDbService.getAll('mouvement') as Mouvement[];
+    const mouvementOff = mouvementList.find(m => m.offlineId === offlineId);
+    */
+    const mouvementOff = await this.offlineDbService.get('mouvement', offlineId);
+    if (this.shareService.isConnected) {
+      // Synchro data
+      const newMov = await this.http.get<Mouvement>(this.url + '/' + mouvementOff.id).toPromise();
+      Object.assign(mouvementOff, newMov);
+      await this.offlineDbService.update('mouvement', mouvementOff);
+    }
+    return mouvementOff;
   }
 
   private findById(mouvements: Mouvement[], id: number | string) {
@@ -62,25 +60,23 @@ export class MouvementService {
       : mouvements.find(m => m.offlineId === +id);
   }
 
-  async addMouvement(mouvement: Mouvement): Promise<any> {
+  async addMouvement(mouvement: Mouvement): Promise<void> {
     if (this.shareService.isConnected) {
       const result = await this.http.post<Mouvement>(this.url, mouvement, httpOptions).toPromise();
       mouvement.id = result['createdId'];
-      return from(this.offlineDbService.add('mouvement', mouvement));
+      return this.offlineDbService.add('mouvement', mouvement);
     } else {
-      return from(this.offlineDbService.add('mouvement', mouvement, true));
+      return this.offlineDbService.add('mouvement', mouvement, true);
     }
   }
 
-  async deleteMouvement(mouvement: Mouvement): Promise<any> {
+  async deleteMouvement(offlineId: number | string): Promise<any> {
+    const mouvementOff = await this.offlineDbService.get('mouvement', offlineId) as Mouvement;
     if (this.shareService.isConnected) {
-      await this.http.delete(this.url + '/' + mouvement.id, httpOptions).toPromise();
-      const existMouvement = await this.offlineDbService.findByPropertyValue('mouvement', 'id', mouvement.id) as Mouvement;
-      if (existMouvement != null && existMouvement.offlineId > 0) {
-        this.offlineDbService.delete('mouvement', existMouvement.offlineId);
-      }
+      await this.http.delete(this.url + '/' + mouvementOff.id, httpOptions).toPromise();
+      this.offlineDbService.delete('mouvement', offlineId);
     } else {
-      this.offlineDbService.delete('mouvement', mouvement.offlineId, mouvement.id > 0);
+      this.offlineDbService.delete('mouvement', offlineId, mouvementOff.id > 0);
     }
   }
 
@@ -89,12 +85,10 @@ export class MouvementService {
     if (this.shareService.isConnected) {
       await this.http.put<Mouvement>(this.url + '/' + mouvement.id, mouvement, httpOptions).toPromise();
     }
-
     // offline
-    const existMouvement = await this.offlineDbService.findByPropertyValue('mouvement', 'id', mouvement.id) as Mouvement;
-    if (existMouvement != null && existMouvement.offlineId > 0) {
-      Object.assign(existMouvement, mouvement);
-      this.offlineDbService.update('mouvement', existMouvement, !this.shareService.isConnected);
-    }
+    const existMouvement = await this.offlineDbService.get('mouvement', mouvement.offlineId) as Mouvement;
+    Object.assign(existMouvement, mouvement);
+    const updateAction = ((existMouvement.action == null || existMouvement.action === undefined) && !this.shareService.isConnected);
+    this.offlineDbService.update('mouvement', existMouvement, updateAction);
   }
 }

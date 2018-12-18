@@ -4,7 +4,7 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import { Observable, of, EMPTY } from 'rxjs';
+import { Observable, of, EMPTY, from } from 'rxjs';
 import { mergeMap, take } from 'rxjs/operators';
 import { Mouvement } from '../mouvement';
 import { MouvementService } from '../mouvement.service';
@@ -17,13 +17,9 @@ export class MouvementDetailResolverService implements Resolve<Mouvement> {
   constructor(private ms: MouvementService, private router: Router) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Mouvement> | Observable<never> {
-
     // TODO Txie
-    console.log('222222222222222222222222222222222222222222222222222222');
-    const id = route.paramMap.get('id');
-    // this.ms.getMouvement(id).toPromise().then(c => console.log('CCCCCCCCCCCCCCCCCCCCC :', c));
-    return this.ms.getMouvement(id);
-
+    const offlineId = route.queryParamMap.get('offlineId');
+    return from(this.ms.getMouvement(parseInt(offlineId, 10)));
     /*
     return this.ms.getMouvement(id).pipe(
       take(1),
