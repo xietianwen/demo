@@ -60,8 +60,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 20)http-server -p 8080 -c-1 dist/jason-project-v1
 21)ng generate service common/services/DB
 22)ng generate service common/services/onlineDB
-
-
+23)Azure config for node.js
+    1.=> To check the available runtime versions for your app, Goto Kudu console -> Runtime versions
+    The Node.js versions provided by Azure are constantly updated. Unless otherwise specified, the default version that is specified in the WEBSITE_NODE_DEFAULT_VERSION environment variable will be used.
+    2.=> specify the WEBSITE_NODE_DEFAULT_VERSION as 8.9.0 under ‘Application settings’ and check if that resolves the issue.
+    3.=> Kudu console => node -v
+    4.=>    
 
 
 

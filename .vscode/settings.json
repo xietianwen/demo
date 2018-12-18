@@ -1,0 +1,7 @@
+{
+    "appService.defaultWebAppToDeploy": "",
+    "appService.deploySubpath": "dist\\jason-project-v1",
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}"
+    ]
+}
