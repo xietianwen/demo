@@ -4,7 +4,7 @@ import { Mouvement } from '../mouvement';
 import { MouvementService } from '../mouvement.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, from } from 'rxjs';
-import { switchMap, map, filter } from 'rxjs/operators';
+import { switchMap, map, filter, tap } from 'rxjs/operators';
 import { ShareService } from 'src/app/common/services/share.service';
 import { SynchroniseStatusType } from 'src/app/common/enums/OnlineStatusType';
 import { MouvementsModule } from '../mouvements.module';
@@ -62,14 +62,11 @@ export class MouvementListComponent implements OnInit {
   }
 
   reloadMouvementData() {
-    this.mouvementes$ = this.route.paramMap.pipe(
-      switchMap(params => {
-        // (+) before `params.get()` turns the string into a number
-        this.selectedId = +params.get('id');
-        return this.service.getMouvementes();
-      }),
+   this.mouvementes$ = from(this.service.getMouvementes())
+   .pipe(
+      tap(xx => console.log('getMouvementessssssssssssssssssssssss:', xx)),
       map(mouvemnts => mouvemnts.filter(m => m.action !== 'Delete'))
-    );
+   );
   }
 
   deleteMouvement(mov: Mouvement) {

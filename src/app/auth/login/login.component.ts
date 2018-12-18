@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { ShareService } from 'src/app/common/services/share.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { AuthService } from '../auth.service';
 export class LoginComponent {
   message: string;
 
-  constructor(public authService: AuthService, public router: Router) {
+  constructor(public authService: AuthService, public router: Router, private shareService: ShareService) {
     this.setMessage();
   }
 
@@ -35,8 +36,12 @@ export class LoginComponent {
           preserveFragment: true
         };
 
-        // Redirect the user
-        this.router.navigate([redirect], navigationExtras);
+        // TODO Txie Synchronise data
+        this.shareService.synchroniseDataToServer().then(() => {
+          // Redirect the user
+          this.router.navigate([redirect], navigationExtras);
+        });
+
       }
     });
   }

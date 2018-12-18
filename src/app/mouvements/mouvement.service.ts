@@ -27,16 +27,16 @@ export class MouvementService {
     // this.handleError = httpErrorHandler.createHandleError('MouvementService');
   }
 
-  async getMouvementes(): Promise<Mouvement[]> {
+  async getMouvementes(needSynChro: boolean = false): Promise<Mouvement[]> {
     this.messageService.add('MouvementService: fetched Mouvementes');
-    if (this.shareService.status === OnlineStatusType.OFFLINE) {
-      return this.offlineDbService.getAll('mouvement');
-    } else {
+    const result = await this.offlineDbService.getAll('mouvement') as Mouvement[];
+    if (needSynChro) {
       const mouvemntsFromServer = await this.http.get<Mouvement[]>(this.url).toPromise();
       await this.offlineDbService.clear('mouvement');
       this.offlineDbService.addAll('mouvement', mouvemntsFromServer);
       return this.offlineDbService.getAll('mouvement');
     }
+    return result;
   }
 
   async getMouvement(offlineId: number): Promise<Mouvement> {
