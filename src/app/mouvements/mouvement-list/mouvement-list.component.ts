@@ -51,18 +51,31 @@ export class MouvementListComponent implements OnInit {
   }
 
   initRefreshDataListenner() {
+    //offline
+    this.shareService.statusChanged.subscribe((statusChanged)=>{
+      if(statusChanged && !this.shareService.isConnected)
+      {
+        this.reloadMouvementData();
+      }
+    })
+
+    //online 
     this.shareService.statusSynchronise.subscribe((statusSynchronise) => {
       if (statusSynchronise === SynchroniseStatusType.Synchronised) {
         console.log('initRefreshDataListenner statusSynchronise :', statusSynchronise);
-        this.mouvementes$ = this.route.paramMap.pipe(
-          switchMap(params => {
-            // (+) before `params.get()` turns the string into a number
-            this.selectedId = +params.get('id');
-            return this.service.getMouvementes();
-          })
-        );
+        this.reloadMouvementData();
       }
     });
+  }
+
+  reloadMouvementData() {
+    this.mouvementes$ = this.route.paramMap.pipe(
+      switchMap(params => {
+        // (+) before `params.get()` turns the string into a number
+        this.selectedId = +params.get('id');
+        return this.service.getMouvementes();
+      })
+    );
   }
 }
 

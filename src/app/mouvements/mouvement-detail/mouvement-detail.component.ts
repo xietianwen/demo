@@ -43,11 +43,8 @@ export class MouvementDetailComponent implements OnInit {
 
   updateMouvement(mov: Mouvement) {
     console.log('mov :', mov);
-
-    this.service.updateMouvement(mov)
-      .subscribe(() => {
-        this.router.navigate(['/mouvements']);
-      });
-
+    this.service.updateMouvement(mov).then(() =>{
+      this.router.navigate(['/mouvements']);
+    });
   }
 }

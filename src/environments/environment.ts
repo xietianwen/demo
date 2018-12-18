@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  jasonApiUrl: 'https://tiannetcorejasonapi.azurewebsites.net/api'
+  jasonApiUrl: 'http://localhost:4000/api'
 };
 
 /*

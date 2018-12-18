@@ -75,6 +75,7 @@ export class OfflineDBService {
       if (!cursor) {
         return;
       }
+      console.log('cursor :',cursor.value);
       if (cursor.value[propertyName] === properyValue) {
         return cursor.value;
       } else {
@@ -83,10 +84,20 @@ export class OfflineDBService {
     });
   }
 
-  update(storeName, key, val): Promise<void> {
+  updateWithKey(storeName, key, val): Promise<void> {
     return this.dbPromise.then(db => {
       const tx = db.transaction(storeName, 'readwrite');
       tx.objectStore(storeName).put(val, key);
+      return tx.complete;
+    });
+  }
+
+  update(storeName, val,dirtyData:boolean = false): Promise<void> {
+    return this.dbPromise.then(db => {
+      if(dirtyData)
+        val.action = 'Update';
+      const tx = db.transaction(storeName, 'readwrite');
+      tx.objectStore(storeName).put(val);
       return tx.complete;
     });
   }
@@ -123,6 +134,11 @@ export class OfflineDBService {
 
       return tx.complete.then(() => keys);
     });
+  }
+
+  hasKey(storeName: string,key:string)
+  {
+    
   }
 
   clearDB(): Promise<any> {

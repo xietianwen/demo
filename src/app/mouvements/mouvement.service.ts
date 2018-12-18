@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 
 import { Mouvement } from './Mouvement';
 import { MessageService } from '../common/services/message.service';
@@ -28,15 +28,12 @@ export class MouvementService {
   }
 
   getMouvementes(): Observable<Mouvement[]> {
-    console.log('line 3888888888888888888888888 this.shareService.status:', this.shareService.status);
-
     this.messageService.add('MouvementService: fetched Mouvementes');
     if (this.shareService.status === OnlineStatusType.OFFLINE) {
       return from(this.offlineDbService.getAll('mouvement'));
     } else {
       return this.http.get<Mouvement[]>(this.url).pipe(
         // map((mouvements: Mouvement[]) => mouvements.map(m => Mouvement.fromJson(m))),
-
         tap(
           data => console.log('data :', data)
         )
@@ -69,17 +66,16 @@ export class MouvementService {
     }
   }
 
-  updateMouvement(mouvement: Mouvement): Observable<any> {
-    if (this.shareService.status === OnlineStatusType.OFFLINE) {
-      mouvement.action = 'Update';
+  async updateMouvement(mouvement: Mouvement): Promise<any> {
+    if(this.shareService.isConnected)
+      await this.http.put<Mouvement>(this.url+'/'+mouvement.id, mouvement, httpOptions).toPromise();
 
-      this.offlineDbService.findByPropertyValue('mouvement', 'id', mouvement.id).then((item) => {
-        console.log('item :', item);
-      });
-
-      //return from(this.offlineDbService.update('mouvement', mo, mouvement));
-    } else {
-      return this.http.post<Mouvement>(this.url, mouvement, httpOptions);
+    const existMouvement = await this.offlineDbService.findByPropertyValue('mouvement','id',mouvement.id) as Mouvement;
+    
+    if(existMouvement != null && existMouvement.offlineId > 0)
+    {
+      Object.assign(existMouvement,mouvement);
+      this.offlineDbService.update('mouvement', existMouvement,!this.shareService.isConnected);
     }
   }
 }
