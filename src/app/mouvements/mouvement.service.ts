@@ -52,8 +52,14 @@ export class MouvementService {
           console.log('data.find(m => m.Id === +id)', data.find(m => m.id === +id));
         }
       ),
-      map((mouvements: Mouvement[]) => mouvements.find(m => m.id === +id))
+      map((mouvements: Mouvement[]) => this.findById(mouvements, id))
     );
+  }
+
+  private findById(mouvements: Mouvement[], id: number | string) {
+    return this.shareService.isConnected
+      ? mouvements.find(m => m.id === +id)
+      : mouvements.find(m => m.offlineId === +id);
   }
 
   async addMouvement(mouvement: Mouvement): Promise<any> {
@@ -63,6 +69,18 @@ export class MouvementService {
       return from(this.offlineDbService.add('mouvement', mouvement));
     } else {
       return from(this.offlineDbService.add('mouvement', mouvement, true));
+    }
+  }
+
+  async deleteMouvement(mouvement: Mouvement): Promise<any> {
+    if (this.shareService.isConnected) {
+      await this.http.delete(this.url + '/' + mouvement.id, httpOptions).toPromise();
+      const existMouvement = await this.offlineDbService.findByPropertyValue('mouvement', 'id', mouvement.id) as Mouvement;
+      if (existMouvement != null && existMouvement.offlineId > 0) {
+        this.offlineDbService.delete('mouvement', existMouvement.offlineId);
+      }
+    } else {
+      this.offlineDbService.delete('mouvement', mouvement.offlineId, mouvement.id > 0);
     }
   }
 

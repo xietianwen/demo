@@ -106,12 +106,25 @@ export class OfflineDBService {
     });
   }
 
-  delete(storeName: string, key): Promise<void> {
-    return this.dbPromise.then(db => {
-      const tx = db.transaction(storeName, 'readwrite');
-      tx.objectStore(storeName).delete(key);
-      return tx.complete;
-    });
+  delete(storeName: string, key, dirtyData: boolean = false): Promise<void> {
+    if (dirtyData) {
+      this.get(storeName, key).then((val) => {
+        if (val != null) {
+          val.action = 'Delete';
+          this.dbPromise.then(db => {
+            const tx = db.transaction(storeName, 'readwrite');
+            tx.objectStore(storeName).put(val);
+            return tx.complete;
+          });
+        }
+      });
+    } else {
+      return this.dbPromise.then(db => {
+        const tx = db.transaction(storeName, 'readwrite');
+        tx.objectStore(storeName).delete(key);
+        return tx.complete;
+      });
+    }
   }
 
   clear(storeName: string): Promise<void> {
@@ -140,9 +153,8 @@ export class OfflineDBService {
     });
   }
 
-  hasKey(storeName: string,key:string)
-  {
-    
+  hasKey(storeName: string, key: string) {
+
   }
 
   clearDB(): Promise<any> {

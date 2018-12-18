@@ -37,7 +37,7 @@ const mouvementsRoutes: Routes = [
     component: MouvementListComponent
   },
   {
-    path: 'mouvements/detail/:id',
+    path: 'mouvements/detail',
     component: MouvementDetailComponent,
     resolve: {
       mov: MouvementDetailResolverService

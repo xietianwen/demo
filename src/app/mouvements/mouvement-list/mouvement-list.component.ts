@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Mouvement } from '../mouvement';
 import { MouvementService } from '../mouvement.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
+import { switchMap, map, filter } from 'rxjs/operators';
 import { ShareService } from 'src/app/common/services/share.service';
 import { SynchroniseStatusType } from 'src/app/common/enums/OnlineStatusType';
 
@@ -51,15 +51,14 @@ export class MouvementListComponent implements OnInit {
   }
 
   initRefreshDataListenner() {
-    //offline
-    this.shareService.statusChanged.subscribe((statusChanged)=>{
-      if(statusChanged && !this.shareService.isConnected)
-      {
+    // online => offline => reloadData with db offline
+    this.shareService.statusChanged.subscribe((statusChanged) => {
+      if (statusChanged && !this.shareService.isConnected) {
         this.reloadMouvementData();
       }
-    })
+    });
 
-    //online 
+    // offline => online => reloadData after synchronised
     this.shareService.statusSynchronise.subscribe((statusSynchronise) => {
       if (statusSynchronise === SynchroniseStatusType.Synchronised) {
         console.log('initRefreshDataListenner statusSynchronise :', statusSynchronise);
@@ -76,6 +75,18 @@ export class MouvementListComponent implements OnInit {
         return this.service.getMouvementes();
       })
     );
+  }
+
+  deleteMouvement(mov: Mouvement) {
+    console.log('mov :', mov);
+    this.service.deleteMouvement(mov).then(() => {
+      // TODO Txie
+      this.mouvementes$ = this.mouvementes$.pipe(
+        map(mouvements => mouvements.filter(m => m.id !== mov.id))
+      );
+    });
+
+
   }
 }
 

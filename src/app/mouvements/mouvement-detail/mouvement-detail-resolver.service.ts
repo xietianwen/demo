@@ -17,10 +17,11 @@ export class MouvementDetailResolverService implements Resolve<Mouvement> {
   constructor(private ms: MouvementService, private router: Router) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Mouvement> | Observable<never> {
+
+    // TODO Txie
+    console.log('222222222222222222222222222222222222222222222222222222');
     const id = route.paramMap.get('id');
-
-    this.ms.getMouvement(id).toPromise().then(c => console.log('CCCCCCCCCCCCCCCCCCCCC :', c));
-
+    // this.ms.getMouvement(id).toPromise().then(c => console.log('CCCCCCCCCCCCCCCCCCCCC :', c));
     return this.ms.getMouvement(id);
 
     /*

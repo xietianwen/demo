@@ -4,9 +4,10 @@
 <ul class="mouvementes">
   <li *ngFor="let mouvement of mouvementes$ | async"
     [class.selected]="mouvement.id === selectedId">
-    <a [routerLink]="['/mouvements/detail', mouvement.id]">
+    <a [routerLink]="['/mouvements/detail']" [queryParams]="{id: mouvement.id, offlineId: mouvement.offlineId}">
       <span class="badge">{{ mouvement.id }}</span>{{ mouvement.name }}
     </a>
+    <button style="float:right" (click)="deleteMouvement(mouvement)">Del</button>
   </li>
 </ul>
 
